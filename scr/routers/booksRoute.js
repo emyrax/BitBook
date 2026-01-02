@@ -42,13 +42,13 @@ router.get("/", protectedRoute , async ( req, res )=>{
   .populate( "user", "username profileImage")
   const totalBooks = await Book.countDocuments();
   
-  res.send(
-    book,
-    page,
-    totalBooks,
-    totalPage:Math.ceil(totalBooks/limit)
-    )
-  } 
+  res.send({
+      books,
+      currentPage: page,
+      totalBooks,
+      totalPages: Math.ceil(totalBooks / limit),
+    });
+  }
   
   catch (err) {
     console.error('Error in Getting All Books :', err);
@@ -62,37 +62,41 @@ router.delete("/:id" , protectedRoute, async (req ,res)=> {
     const bookId = req.parmas.id
   const book = Book.findById(bookId)
   if(!book){
-    return res.status(404).json("message" : " 404  Book not found")
-  if(book.user.toString()!==res.user._id.toString()){
+    return res.status(404).json({"message" : " 404  Book not found"})}
+      if(book.user.toString()!==res.user._id.toString()){
     return res.status(401).json({
       "message":" Not Authorized Action by User"
-    })
+    }) }
+  
     // deleting image from cloudinary
     if(book.image && book.image.includes("cloudinary") ){
       try {
         const publicId= await book.image.split("/").pop().split(".")[0]
      await cloudinary.uploader.destory(publicId)
-      } catch (err) {
-        console.error('Error:', err);
+      } 
+      catch (err) {
+        console.error('cloudDeleteError:', err);
         
       }
     }
    await book.deleteOne()
     res.status(200).json({"message" :" Sucessfully Deleted"})
-  }
   
- } catch (err) {
+ }
+ catch (err) {
    console.error('Error In Deleting A Book:', err);
    
  }
-  }
+
   
 })
+
+
 router.get("/user" ,protectedRoute , async (req, res)=>{
   try {
     const book = Book.find({user:req.user._id}).sort({createdAt:-1})
     if(!book){
-      return res.status(404).json({ "message":"No Book found"})
+       return res.status(404).json({ "message":"No Book found"})
     }
   res.status(200).json(book)
   
