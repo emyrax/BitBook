@@ -5,7 +5,7 @@ import generateToken from "../config/util.js"
  router.use(express.json())
 router.post("/register", async (req,res) =>{
   try {
-    console.log("hitted")
+    //console.log("hitted")
     const {email,username,password}= await req.body
     if(!email || !username || !password){
       return res.status(400).json({"message":"All input are required , Kindly fill all input"})  
@@ -38,11 +38,12 @@ router.post("/register", async (req,res) =>{
      res.status(201).json(
        { 
        "token": token,
+       "user": {
        "userId":user._id,
        "username": user.username,
        "email":user.email
        //"createAt":user.createdAt
-        })
+        }})
 
      
       
@@ -61,7 +62,7 @@ router.post("/login", async (req,res) =>{
   try {
     //Get req datas
     const { email, password } = await req.body
-    console.log(email,password)
+    //console.log(email,password)
     // Avoid empty field
     if(!email || !password){
       return res.status(400).json({"message":"All fields are required "})
@@ -82,11 +83,12 @@ router.post("/login", async (req,res) =>{
      res.status(201).json(
        { 
        "token": token,
+       "user" :{
        "id":user._id,
        "username": user.username,
        "email":user.email
        //"createAt":user.createdAt
-        })
+        }})
     
   } 
   catch (err) {
