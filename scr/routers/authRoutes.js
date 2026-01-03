@@ -51,7 +51,9 @@ router.post("/register", async (req,res) =>{
 } 
 catch (err) {
     console.error('Error:', err);
-    return res.status(500).json({ "message":`Server Error ${err} ` })
+    return res.status(500).json({ "message": err.message})
+    
+    
   }
   
 
@@ -94,7 +96,7 @@ router.post("/login", async (req,res) =>{
   catch (err) {
     
     console.error('Error:', err);
-    return res.status(500).json({"message":err})
+    return res.status(500).json({"message": err.message})
   }
   
 
